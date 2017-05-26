@@ -1,0 +1,144 @@
+﻿@model PagedList.IPagedList<MVCDatabaseFirst.Models.Employee>
+@using PagedList.Mvc
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Employees</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+ 
+</p>
+@using (Html.BeginForm("Index", "Employee", FormMethod.Get))
+{
+    <p>
+        <div class="input-group">
+            <div class="input-group-btn">
+                <button class="btn btn-primary" type="submit" value="search"><i class="glyphicon glyphicon-search"></i> Search</button> 
+            </div>
+            @Html.TextBox("Search_Data", ViewBag.FilterValue as string, new { @class = "form-control" })
+                    
+        </div>
+    
+    </p>
+}
+<style type="text/css">
+    .table-header{
+        color: #ffffff;
+        background-color: #fff;
+        border-color: #f9f9f9;
+     }
+   
+</style>
+<div class="table-responsive">
+    <table class="table table-bordered table-condensed">
+        @using (Html.BeginForm("Index", "Employee", FormMethod.Get))
+        {
+        <tr class="table-header">
+            <th>
+                @Html.ActionLink("First Name", "Index",
+               new
+               {
+                   Sorting_Order = ViewBag.SortingFirstName,
+                   Filter_Value = ViewBag.FilterValue,
+                   SelectedFirstName = ViewBag.SelectedFirstName,
+                   SelectedLastName = ViewBag.SelectedLastName
+               })
+            </th>
+
+            <th>
+                @Html.ActionLink("Last Name", "Index",
+               new
+               {
+                   Sorting_Order = ViewBag.SortingLastName,
+                   Filter_Value = ViewBag.FilterValue,
+                   SelectedFirstName = ViewBag.SelectedFirstName,
+                   SelectedLastName = ViewBag.SelectedLastName
+               })
+            </th>
+
+            <th>
+                @Html.ActionLink("Middle Name", "Index", new { Sorting_Order = ViewBag.SortingMiddleName, Filter_Value = ViewBag.FilterValue })
+            </th>
+            <th>
+                @Html.ActionLink("Address Name", "Index", new { Sorting_Order = ViewBag.SortingAddress, Filter_Value = ViewBag.FilterValue })
+            </th>
+            <th>
+                @Html.ActionLink("Salary", "Index", new { Sorting_Order = ViewBag.SortingSalary, Filter_Value = ViewBag.FilterValue })
+            </th>
+            <th>
+                @Html.ActionLink("Email Address", "Index", new { Sorting_Order = ViewBag.SortingEmail, Filter_Value = ViewBag.FilterValue })
+            </th>
+            <th class="text-danger">Action</th>
+        </tr>
+        <tr>
+            <th>
+                @Html.DropDownList("SelectedFirstName",
+                 new SelectList(ViewBag.UniqueFirstNames, "Value", "Text", "ViewBag.SelectedFirstName"),
+                 "All", new { onchange = "form.submit();" })
+            </th>
+            <th>
+                @Html.DropDownList("SelectedLastName",
+                 new SelectList(ViewBag.UniqueLastNames, "Value", "Text", "ViewBag.SelectedLastName"),
+                 "All", new { onchange = "form.submit();" })
+            </th>
+        </tr>
+        }
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.LastName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MiddleName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Address)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Salary)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
+                    @Html.ActionLink("Details", "Details", new { id = item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                </td>
+            </tr>
+        }
+
+    </table>
+    <br />
+    <br />
+    <div class="pull-right">
+        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+        @Html.PagedListPager(Model, Page_No => Url.Action("Index",
+    new { Page_No, Sorting_Order = ViewBag.CurrentSortOrder, Filter_Value = ViewBag.FilterValue }))
+    </div>
+</div>
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+
+@*Set the hover color on the table*@
+<script type="text/javascript">
+$("tr").not(':first').hover(
+  function () {
+      $(this).css("background", "WhiteSmoke");
+  },
+  function () {
+    $(this).css("background","");
+  }
+);
+</script>
+@*Set the CSS Class for the Dropdown filter*@
+<script type="text/javascript">
+      $('#SelectedFirstName').addClass('form-control');
+      $('#SelectedLastName').addClass('form-control');
+</script>
